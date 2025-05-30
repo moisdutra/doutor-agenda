@@ -10,6 +10,12 @@ export const auth = betterAuth({
     usePlural: true, // This is to ensure that the table names are pluralized
     schema,
   }),
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+  },
   user: {
     modelName: "usersTable",
   },
