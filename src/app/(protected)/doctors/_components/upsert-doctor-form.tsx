@@ -1,11 +1,24 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TrashIcon } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 import z from "zod";
 
+import { deleteDoctor } from "@/actions/delete-doctor";
 import { upsertDoctor } from "@/actions/upsert-doctor";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DialogContent,
@@ -97,6 +110,20 @@ const UpsertDoctorForm = ({ doctor, onSuccess }: UpsertDoctorFormProps) => {
       toast.error("Erro ao cadastrar médico");
     },
   });
+  const deleteDoctorAction = useAction(deleteDoctor, {
+    onSuccess: () => {
+      toast.success("Médico excluído com sucesso");
+      onSuccess?.();
+    },
+    onError: () => {
+      toast.error("Erro ao excluir médico");
+    },
+  });
+
+  const handleDeleteDoctorClick = () => {
+    if (!doctor) return;
+    deleteDoctorAction.execute({ id: doctor.id });
+  };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     upsertDoctorAction.execute({
@@ -120,6 +147,7 @@ const UpsertDoctorForm = ({ doctor, onSuccess }: UpsertDoctorFormProps) => {
       </DialogHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* Nome */}
           <FormField
             control={form.control}
             name="name"
@@ -133,6 +161,7 @@ const UpsertDoctorForm = ({ doctor, onSuccess }: UpsertDoctorFormProps) => {
               </FormItem>
             )}
           />
+          {/* Especialidade */}
           <FormField
             control={form.control}
             name="specialty"
@@ -160,6 +189,7 @@ const UpsertDoctorForm = ({ doctor, onSuccess }: UpsertDoctorFormProps) => {
               </FormItem>
             )}
           />
+          {/* Preço da consulta */}
           <FormField
             control={form.control}
             name="appointmentPrice"
@@ -380,6 +410,34 @@ const UpsertDoctorForm = ({ doctor, onSuccess }: UpsertDoctorFormProps) => {
             )}
           />
           <DialogFooter>
+            {doctor && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">
+                    <TrashIcon className="mr-2 h-4 w-4" />
+                    Excluir médico
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Tem certeza que deseja excluir o médico?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta ação não pode ser revertida.
+                      <br /> Isso irá excluir o médico e todas as consultas
+                      agendadas.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteDoctorClick}>
+                      Excluir
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
             <Button type="submit" disabled={upsertDoctorAction.isPending}>
               {upsertDoctorAction.isPending
                 ? "Salvando..."
