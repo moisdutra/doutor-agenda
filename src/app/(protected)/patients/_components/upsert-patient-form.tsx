@@ -170,7 +170,7 @@ const UpsertPatientForm = ({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Selecione um gênero" />
                     </SelectTrigger>
                   </FormControl>
