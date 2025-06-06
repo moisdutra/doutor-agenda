@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { DataTable } from "@/components/ui/data-table";
 import {
   PageActions,
   PageContainer,
@@ -12,10 +13,11 @@ import {
   PageTitle,
 } from "@/components/ui/page-container";
 import { db } from "@/db";
-import { doctorsTable, patientsTable } from "@/db/schema";
+import { appointmentsTable, doctorsTable, patientsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 import AddAppointmentButton from "./_components/add-appointment-button";
+import { appointmentTableColumns } from "./_components/table-columns";
 
 const AppointmentsPage = async () => {
   const session = await auth.api.getSession({
@@ -28,7 +30,14 @@ const AppointmentsPage = async () => {
     redirect("/clinic-form");
   }
 
-  const [doctors, patients] = await Promise.all([
+  const [appointments, doctors, patients] = await Promise.all([
+    db.query.appointmentsTable.findMany({
+      where: eq(appointmentsTable.clinicId, session.user.clinic.id),
+      with: {
+        patient: true,
+        doctor: true,
+      },
+    }),
     db.query.doctorsTable.findMany({
       where: eq(doctorsTable.clinicId, session.user.clinic.id),
     }),
@@ -50,7 +59,9 @@ const AppointmentsPage = async () => {
           <AddAppointmentButton doctors={doctors} patients={patients} />
         </PageActions>
       </PageHeader>
-      <PageContent>{/* TODO: Add appointments table */}</PageContent>
+      <PageContent>
+        <DataTable columns={appointmentTableColumns} data={appointments} />
+      </PageContent>
     </PageContainer>
   );
 };

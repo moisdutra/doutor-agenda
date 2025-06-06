@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import dayjs from "dayjs";
 import { CalendarIcon } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useEffect, useState } from "react";
@@ -45,7 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { appointmentsTable, doctorsTable, patientsTable } from "@/db/schema";
+import { doctorsTable, patientsTable } from "@/db/schema";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
@@ -66,21 +65,19 @@ const formSchema = z.object({
   }),
 });
 
-interface UpsertAppointmentFormProps {
+interface CreateAppointmentFormProps {
   isOpen: boolean;
   onSuccess?: () => void;
   doctors: (typeof doctorsTable.$inferSelect)[];
   patients: (typeof patientsTable.$inferSelect)[];
-  appointment?: typeof appointmentsTable.$inferSelect;
 }
 
-const UpsertAppointmentForm = ({
+const CreateAppointmentForm = ({
   isOpen,
   onSuccess,
   doctors,
   patients,
-  appointment,
-}: UpsertAppointmentFormProps) => {
+}: CreateAppointmentFormProps) => {
   const [selectedDoctor, setSelectedDoctor] = useState<
     typeof doctorsTable.$inferSelect | null
   >(null);
@@ -88,11 +85,10 @@ const UpsertAppointmentForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      patientId: appointment?.patientId ?? "",
-      doctorId: appointment?.doctorId ?? "",
-      appointmentPriceInCents: appointment?.appointmentPriceInCents ?? 0,
-      date: appointment?.date ?? new Date(),
-      time: appointment?.date ? dayjs(appointment.date).format("HH:mm:ss") : "",
+      patientId: "",
+      doctorId: "",
+      appointmentPriceInCents: 0,
+      time: "",
     },
   });
 
@@ -292,7 +288,6 @@ const UpsertAppointmentForm = ({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {/* TODO: Add available time slots */}
                     <SelectGroup>
                       <SelectLabel>Manhã</SelectLabel>
                       <SelectItem value="05:00:00">05:00</SelectItem>
@@ -357,4 +352,4 @@ const UpsertAppointmentForm = ({
   );
 };
 
-export default UpsertAppointmentForm;
+export default CreateAppointmentForm;
