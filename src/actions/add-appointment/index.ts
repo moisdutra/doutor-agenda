@@ -49,4 +49,5 @@ export const addAppointment = actionClient
     });
 
     revalidatePath("/appointments");
+    revalidatePath("/dashboard"); // Revalida a página de dashboard para atualizar os dados
   });

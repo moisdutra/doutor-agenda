@@ -30,10 +30,10 @@ export function DatePicker({
 
   const handleDateSelect = (dateRage: DateRange | undefined) => {
     if (dateRage?.from) {
-      setFrom(dateRage.from);
+      setFrom(dateRage.from, { shallow: false });
     }
     if (dateRage?.to) {
-      setTo(dateRage.to);
+      setTo(dateRage.to, { shallow: false });
     }
   };
 
