@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusIcon } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ const AddAppointmentButton = ({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>
-          <PlusIcon className="mr-2 h-4 w-4" />
+          <Plus />
           Novo agendamento
         </Button>
       </DialogTrigger>
