@@ -5,7 +5,7 @@ import { CheckCircle2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
 
-import { createStripeCheckout } from "@/actions/create-strie-checkout";
+import { createStripeCheckout } from "@/actions/create-stripe-checkout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
